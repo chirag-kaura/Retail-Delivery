@@ -1,5 +1,7 @@
 # Brazil E-Commerce Logistics MLOps Pipeline 🚚📊
 
+[![Live Dashboard](https://img.shields.io/badge/Live_Dashboard-View_Here-teal?style=for-the-badge&logo=github)](https://chirag-kaura.github.io/Retail-Delivery/City_Delivery_Investment.html)
+
 An end-to-end Machine Learning and Data Analytics project addressing delivery latency and customer churn in the Brazilian E-Commerce sector.
 
 This repository transforms raw e-commerce data into a strategic business presentation backed by a live Machine Learning Operations (MLOps) pipeline. It identifies revenue at risk due to late deliveries and provides an interactive Random Forest model to predict latency risk in real-time.
@@ -34,7 +36,9 @@ This repository transforms raw e-commerce data into a strategic business present
 ## 🚀 Getting Started
 
 ### 1. View the Business Dashboard
-Simply open the `City_Delivery_Investment.html` file in any modern web browser. No installation is required to view the charts and analysis.
+Simply click on the link below to open the dashboard in any modern web browser. No installation is required to view the charts and analysis.
+
+👉 **[View the Live Business Dashboard](https://chirag-kaura.github.io/Retail-Delivery/City_Delivery_Investment.html)**
 
 ### 2. Run the Machine Learning API (Local)
 To interact with the **Live Model Predictor** at the bottom of the HTML dashboard, start the Python backend server:
