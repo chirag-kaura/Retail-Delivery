@@ -17,8 +17,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-BASE_DIR = r"E:\Praxis\TERM2\DAS\retail_parquet"
-MODEL_PATH = os.path.join(BASE_DIR, "mlops_pipeline", "models", "late_delivery_model.pkl")
+# Use relative path so it works on both Windows locally and Linux on Render
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(CURRENT_DIR, "models", "late_delivery_model.pkl")
 
 # Load model globally when server starts
 try:
@@ -46,9 +47,9 @@ def read_root():
 @app.post("/predict")
 def predict(order: OrderData):
     if model is None:
-        return {"error": "Model not loaded properly."}
+        return {"error": "Model not loaded properly. Check the server logs."}
         
-    df = pd.DataFrame([order.dict()])
+    df = pd.DataFrame([order.model_dump()])
     prob = model.predict_proba(df)[0][1]
     is_late = int(model.predict(df)[0])
     
@@ -61,4 +62,4 @@ def predict(order: OrderData):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=10000)
