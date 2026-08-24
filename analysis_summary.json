@@ -1,0 +1,160 @@
+{
+  "platform_revenue": 13221498.11,
+  "platform_delivered_orders": 96478,
+  "chi2_p_value": 0.0,
+  "t_test_p_value": 0.0,
+  "sp_avg_fulfillment": 8.067869589533867,
+  "target_avg_fulfillment": 19.849570058528318,
+  "seller_analysis": [
+    {
+      "seller_id": "f7ba60f8c3f99e7ee4042fdef03b70c4",
+      "seller_revenue": 68070.0,
+      "seller_orders": 218,
+      "seller_late_orders": 38,
+      "seller_avg_fulfillment": 13.124415534530165,
+      "seller_state": "SP",
+      "seller_late_rate": 0.1743119266055046,
+      "pct_orders_to_target_states": 0.23853211009174313
+    },
+    {
+      "seller_id": "8160255418d5aaa7dbdc9f4c64ebda44",
+      "seller_revenue": 46368.39,
+      "seller_orders": 380,
+      "seller_late_orders": 76,
+      "seller_avg_fulfillment": 16.77892969841894,
+      "seller_state": "SP",
+      "seller_late_rate": 0.2,
+      "pct_orders_to_target_states": 0.2394736842105263
+    },
+    {
+      "seller_id": "712e6ed8aa4aa1fa65dab41fed5737e4",
+      "seller_revenue": 39385.0,
+      "seller_orders": 77,
+      "seller_late_orders": 18,
+      "seller_avg_fulfillment": 23.799676879084966,
+      "seller_state": "SC",
+      "seller_late_rate": 0.23376623376623376,
+      "pct_orders_to_target_states": 0.35064935064935066
+    },
+    {
+      "seller_id": "06a2c3af7b3aee5d69171b0e14f0ee87",
+      "seller_revenue": 36097.979999999996,
+      "seller_orders": 389,
+      "seller_late_orders": 95,
+      "seller_avg_fulfillment": 17.7378431338677,
+      "seller_state": "MA",
+      "seller_late_rate": 0.2442159383033419,
+      "pct_orders_to_target_states": 0.20822622107969152
+    },
+    {
+      "seller_id": "e9bc59e7b60fc3063eb2290deda4cced",
+      "seller_revenue": 33543.69,
+      "seller_orders": 209,
+      "seller_late_orders": 33,
+      "seller_avg_fulfillment": 14.569640357905982,
+      "seller_state": "PR",
+      "seller_late_rate": 0.15789473684210525,
+      "pct_orders_to_target_states": 0.20574162679425836
+    },
+    {
+      "seller_id": "88460e8ebdecbfecb5f9601833981930",
+      "seller_revenue": 31320.4,
+      "seller_orders": 246,
+      "seller_late_orders": 59,
+      "seller_avg_fulfillment": 18.26756948302469,
+      "seller_state": "PR",
+      "seller_late_rate": 0.23983739837398374,
+      "pct_orders_to_target_states": 0.1951219512195122
+    },
+    {
+      "seller_id": "7681ef142fd2c19048da7430856b5588",
+      "seller_revenue": 31211.81,
+      "seller_orders": 58,
+      "seller_late_orders": 9,
+      "seller_avg_fulfillment": 10.372716709307992,
+      "seller_state": "SP",
+      "seller_late_rate": 0.15517241379310345,
+      "pct_orders_to_target_states": 0.2413793103448276
+    },
+    {
+      "seller_id": "b37c4c02bda3161a7546a4e6d222d5b2",
+      "seller_revenue": 24075.0,
+      "seller_orders": 4,
+      "seller_late_orders": 1,
+      "seller_avg_fulfillment": 17.17511111111111,
+      "seller_state": "SP",
+      "seller_late_rate": 0.25,
+      "pct_orders_to_target_states": 2.75
+    },
+    {
+      "seller_id": "7ad32824caee82087b3e2e5f33b1bf32",
+      "seller_revenue": 22018.1,
+      "seller_orders": 147,
+      "seller_late_orders": 23,
+      "seller_avg_fulfillment": 11.489481738683127,
+      "seller_state": "SP",
+      "seller_late_rate": 0.1564625850340136,
+      "pct_orders_to_target_states": 0.16326530612244897
+    },
+    {
+      "seller_id": "ff69aa92bb6b1bf9b8b7a51c2ed9cf8b",
+      "seller_revenue": 21940.8,
+      "seller_orders": 20,
+      "seller_late_orders": 5,
+      "seller_avg_fulfillment": 11.462290509259258,
+      "seller_state": "SP",
+      "seller_late_rate": 0.25,
+      "pct_orders_to_target_states": 0.05
+    },
+    {
+      "seller_id": "897060da8b9a21f655304d50fd935913",
+      "seller_revenue": 21740.51,
+      "seller_orders": 304,
+      "seller_late_orders": 50,
+      "seller_avg_fulfillment": 14.86209574813918,
+      "seller_state": "SP",
+      "seller_late_rate": 0.16447368421052633,
+      "pct_orders_to_target_states": 0.24671052631578946
+    },
+    {
+      "seller_id": "b1b3948701c5c72445495bd161b83a4c",
+      "seller_revenue": 21519.5,
+      "seller_orders": 14,
+      "seller_late_orders": 9,
+      "seller_avg_fulfillment": 23.403023313492064,
+      "seller_state": "SP",
+      "seller_late_rate": 0.6428571428571429,
+      "pct_orders_to_target_states": 0.2857142857142857
+    },
+    {
+      "seller_id": "8f2ce03f928b567e3d56181ae20ae952",
+      "seller_revenue": 21213.2,
+      "seller_orders": 151,
+      "seller_late_orders": 25,
+      "seller_avg_fulfillment": 14.378301639211886,
+      "seller_state": "SP",
+      "seller_late_rate": 0.16556291390728478,
+      "pct_orders_to_target_states": 0.16556291390728478
+    },
+    {
+      "seller_id": "cd68562d3f44870c08922d380acae552",
+      "seller_revenue": 18119.7,
+      "seller_orders": 122,
+      "seller_late_orders": 26,
+      "seller_avg_fulfillment": 16.78016392118863,
+      "seller_state": "SP",
+      "seller_late_rate": 0.21311475409836064,
+      "pct_orders_to_target_states": 0.1885245901639344
+    },
+    {
+      "seller_id": "821fb029fc6e495ca4f08a35d51e53a5",
+      "seller_revenue": 17851.62,
+      "seller_orders": 24,
+      "seller_late_orders": 9,
+      "seller_avg_fulfillment": 16.362201388888888,
+      "seller_state": "SP",
+      "seller_late_rate": 0.375,
+      "pct_orders_to_target_states": 0.16666666666666666
+    }
+  ]
+}

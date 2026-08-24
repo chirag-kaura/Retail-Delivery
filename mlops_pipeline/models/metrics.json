@@ -1,0 +1,18 @@
+{
+    "roc_auc": 0.7070280692846215,
+    "precision": 0.1714640712362808,
+    "recall": 0.529073482428115,
+    "f1": 0.2589928057553957,
+    "top_features": {
+        "purchase_month": 0.2865311594924962,
+        "freight": 0.10921802175760924,
+        "customer_state_SP": 0.07722802335245987,
+        "revenue": 0.06612236194051907,
+        "product_volume": 0.06519773555475791,
+        "customer_state_RJ": 0.06445458205092697,
+        "product_weight_g": 0.06312843470520693,
+        "purchase_dayofweek": 0.033402869444152425,
+        "seller_state_SP": 0.030983964625150767,
+        "customer_state_MG": 0.025871107286569873
+    }
+}

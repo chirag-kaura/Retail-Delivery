@@ -1,0 +1,116 @@
+[
+    {
+        "batch_id": 1,
+        "timestamp": "2026-08-24 16:46:09",
+        "stats": {
+            "avg_freight": 24.00168521309859,
+            "avg_weight": 2304.237199353157,
+            "late_delivery_rate": 0.08440954762634559
+        },
+        "drift_detected": false,
+        "alerts": []
+    },
+    {
+        "batch_id": 2,
+        "timestamp": "2026-08-24 16:46:10",
+        "stats": {
+            "avg_freight": 24.1644694237877,
+            "avg_weight": 1911.170548281184,
+            "late_delivery_rate": 0.08188511672543901
+        },
+        "drift_detected": false,
+        "alerts": []
+    },
+    {
+        "batch_id": 3,
+        "timestamp": "2026-08-24 16:46:11",
+        "stats": {
+            "avg_freight": 21.597726572981628,
+            "avg_weight": 2350.6342121028656,
+            "late_delivery_rate": 0.07130543492569157
+        },
+        "drift_detected": false,
+        "alerts": []
+    },
+    {
+        "batch_id": 4,
+        "timestamp": "2026-08-24 16:46:12",
+        "stats": {
+            "avg_freight": 23.144220456729766,
+            "avg_weight": 2349.9919551170633,
+            "late_delivery_rate": 0.10090681513023965
+        },
+        "drift_detected": false,
+        "alerts": []
+    },
+    {
+        "batch_id": 5,
+        "timestamp": "2026-08-24 16:46:13",
+        "stats": {
+            "avg_freight": 21.760688730756947,
+            "avg_weight": 1965.8173660606574,
+            "late_delivery_rate": 0.09787915640422883
+        },
+        "drift_detected": false,
+        "alerts": []
+    },
+    {
+        "batch_id": 1,
+        "timestamp": "2026-08-24 16:57:19",
+        "stats": {
+            "avg_freight": 23.56711393527373,
+            "avg_weight": 2398.0080379609035,
+            "late_delivery_rate": 0.12208048483228959
+        },
+        "drift_detected": true,
+        "alerts": [
+            "Late delivery rate spike detected! Currently at 12.2%"
+        ]
+    },
+    {
+        "batch_id": 2,
+        "timestamp": "2026-08-24 16:57:20",
+        "stats": {
+            "avg_freight": 24.025757065416226,
+            "avg_weight": 2240.3900628657143,
+            "late_delivery_rate": 0.1273901194398498
+        },
+        "drift_detected": true,
+        "alerts": [
+            "Late delivery rate spike detected! Currently at 12.7%"
+        ]
+    },
+    {
+        "batch_id": 3,
+        "timestamp": "2026-08-24 16:57:21",
+        "stats": {
+            "avg_freight": 24.96092459260149,
+            "avg_weight": 2257.6440917622617,
+            "late_delivery_rate": 0.062026972928174294
+        },
+        "drift_detected": false,
+        "alerts": []
+    },
+    {
+        "batch_id": 4,
+        "timestamp": "2026-08-24 16:57:22",
+        "stats": {
+            "avg_freight": 25.673305609405833,
+            "avg_weight": 2259.522135824869,
+            "late_delivery_rate": 0.06891139664233051
+        },
+        "drift_detected": false,
+        "alerts": []
+    },
+    {
+        "batch_id": 5,
+        "timestamp": "2026-08-24 16:57:23",
+        "stats": {
+            "avg_freight": 25.868933775298764,
+            "avg_weight": 2085.4179131306846,
+            "late_delivery_rate": 0.06898114987393247
+        },
+        "drift_detected": false,
+        "alerts": []
+    }
+]

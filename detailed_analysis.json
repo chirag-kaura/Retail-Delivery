@@ -1,0 +1,316 @@
+{
+  "hero_categories": {
+    "salvador": [
+      {
+        "product_category_name_english": "health_beauty",
+        "price": 20170.99,
+        "pct": 11.64115827591192,
+        "cum_pct": 11.64115827591192
+      },
+      {
+        "product_category_name_english": "sports_leisure",
+        "price": 16896.760000000002,
+        "pct": 9.751522236146936,
+        "cum_pct": 21.392680512058856
+      },
+      {
+        "product_category_name_english": "watches_gifts",
+        "price": 15567.07,
+        "pct": 8.98412649861014,
+        "cum_pct": 30.376807010668998
+      },
+      {
+        "product_category_name_english": "computers_accessories",
+        "price": 13675.2,
+        "pct": 7.892283306607692,
+        "cum_pct": 38.26909031727669
+      },
+      {
+        "product_category_name_english": "auto",
+        "price": 9807.77,
+        "pct": 5.6602974322896715,
+        "cum_pct": 43.92938774956637
+      },
+      {
+        "product_category_name_english": "bed_bath_table",
+        "price": 9446.83,
+        "pct": 5.451990370112374,
+        "cum_pct": 49.38137811967874
+      }
+    ],
+    "fortaleza": [
+      {
+        "product_category_name_english": "health_beauty",
+        "price": 15544.21,
+        "pct": 16.665878629140636,
+        "cum_pct": 16.665878629140636
+      },
+      {
+        "product_category_name_english": "watches_gifts",
+        "price": 13002.75,
+        "pct": 13.9410271313279,
+        "cum_pct": 30.606905760468536
+      },
+      {
+        "product_category_name_english": "auto",
+        "price": 5557.88,
+        "pct": 5.958936061422753,
+        "cum_pct": 36.56584182189129
+      },
+      {
+        "product_category_name_english": "sports_leisure",
+        "price": 5346.54,
+        "pct": 5.732345788293236,
+        "cum_pct": 42.29818761018453
+      },
+      {
+        "product_category_name_english": "computers_accessories",
+        "price": 4974.88,
+        "pct": 5.333866840099252,
+        "cum_pct": 47.63205445028378
+      },
+      {
+        "product_category_name_english": "cool_stuff",
+        "price": 4939.01,
+        "pct": 5.295408464509417,
+        "cum_pct": 52.927462914793196
+      }
+    ],
+    "sao goncalo": [
+      {
+        "product_category_name_english": "watches_gifts",
+        "price": 7850.77,
+        "pct": 15.444156946818493,
+        "cum_pct": 15.444156946818493
+      },
+      {
+        "product_category_name_english": "garden_tools",
+        "price": 5184.16,
+        "pct": 10.198360247137357,
+        "cum_pct": 25.64251719395585
+      },
+      {
+        "product_category_name_english": "bed_bath_table",
+        "price": 4209.71,
+        "pct": 8.281407039130082,
+        "cum_pct": 33.923924233085934
+      },
+      {
+        "product_category_name_english": "sports_leisure",
+        "price": 3736.87,
+        "pct": 7.3512288310392,
+        "cum_pct": 41.275153064125135
+      },
+      {
+        "product_category_name_english": "toys",
+        "price": 3175.51,
+        "pct": 6.246912701071563,
+        "cum_pct": 47.5220657651967
+      },
+      {
+        "product_category_name_english": "health_beauty",
+        "price": 2893.72,
+        "pct": 5.692571026809804,
+        "cum_pct": 53.2146367920065
+      }
+    ],
+    "sao luis": [
+      {
+        "product_category_name_english": "computers_accessories",
+        "price": 8105.49,
+        "pct": 16.165129227459236,
+        "cum_pct": 16.165129227459236
+      },
+      {
+        "product_category_name_english": "health_beauty",
+        "price": 7004.61,
+        "pct": 13.969596636101361,
+        "cum_pct": 30.134725863560597
+      },
+      {
+        "product_category_name_english": "baby",
+        "price": 3031.07,
+        "pct": 6.044993979077744,
+        "cum_pct": 36.17971984263834
+      },
+      {
+        "product_category_name_english": "sports_leisure",
+        "price": 2895.62,
+        "pct": 5.774860186566821,
+        "cum_pct": 41.95458002920516
+      },
+      {
+        "product_category_name_english": "auto",
+        "price": 2741.16,
+        "pct": 5.466813928971864,
+        "cum_pct": 47.42139395817703
+      },
+      {
+        "product_category_name_english": "cool_stuff",
+        "price": 2497.7400000000002,
+        "pct": 4.981350896317685,
+        "cum_pct": 52.40274485449471
+      }
+    ],
+    "teresina": [
+      {
+        "product_category_name_english": "auto",
+        "price": 6885.67,
+        "pct": 14.04419912716198,
+        "cum_pct": 14.04419912716198
+      },
+      {
+        "product_category_name_english": "health_beauty",
+        "price": 4722.72,
+        "pct": 9.632587693257218,
+        "cum_pct": 23.676786820419196
+      },
+      {
+        "product_category_name_english": "watches_gifts",
+        "price": 4109.04,
+        "pct": 8.38090933510808,
+        "cum_pct": 32.057696155527275
+      },
+      {
+        "product_category_name_english": "sports_leisure",
+        "price": 3903.01,
+        "pct": 7.960684963889422,
+        "cum_pct": 40.018381119416695
+      },
+      {
+        "product_category_name_english": "computers_accessories",
+        "price": 2718.66,
+        "pct": 5.545052609121579,
+        "cum_pct": 45.56343372853827
+      },
+      {
+        "product_category_name_english": "baby",
+        "price": 2571.59,
+        "pct": 5.245084651663306,
+        "cum_pct": 50.808518380201576
+      }
+    ]
+  },
+  "delayed_sellers": [
+    {
+      "seller_id": "f7ba60f8c3f99e7ee4042fdef03b70c4",
+      "revenue": 68070.0,
+      "orders_count": 218,
+      "late_orders": 38,
+      "avg_fulfillment": 13.124415534530165,
+      "seller_city": "sao bernardo do campo",
+      "seller_state": "SP",
+      "late_rate": 0.1743119266055046,
+      "pct_orders_to_target_states": 22.707423580786028,
+      "target_orders_count": 52
+    },
+    {
+      "seller_id": "8160255418d5aaa7dbdc9f4c64ebda44",
+      "revenue": 46368.39,
+      "orders_count": 380,
+      "late_orders": 76,
+      "avg_fulfillment": 16.77892969841894,
+      "seller_city": "ibitinga",
+      "seller_state": "SP",
+      "late_rate": 0.2,
+      "pct_orders_to_target_states": 21.462264150943398,
+      "target_orders_count": 91
+    },
+    {
+      "seller_id": "712e6ed8aa4aa1fa65dab41fed5737e4",
+      "revenue": 39385.0,
+      "orders_count": 77,
+      "late_orders": 18,
+      "avg_fulfillment": 23.799676879084966,
+      "seller_city": "videira",
+      "seller_state": "SC",
+      "late_rate": 0.23376623376623376,
+      "pct_orders_to_target_states": 31.76470588235294,
+      "target_orders_count": 27
+    },
+    {
+      "seller_id": "06a2c3af7b3aee5d69171b0e14f0ee87",
+      "revenue": 36097.979999999996,
+      "orders_count": 389,
+      "late_orders": 95,
+      "avg_fulfillment": 17.7378431338677,
+      "seller_city": "sao luis",
+      "seller_state": "MA",
+      "late_rate": 0.2442159383033419,
+      "pct_orders_to_target_states": 20.149253731343283,
+      "target_orders_count": 81
+    },
+    {
+      "seller_id": "e9bc59e7b60fc3063eb2290deda4cced",
+      "revenue": 33543.69,
+      "orders_count": 209,
+      "late_orders": 33,
+      "avg_fulfillment": 14.569640357905982,
+      "seller_city": "maringa",
+      "seller_state": "PR",
+      "late_rate": 0.15789473684210525,
+      "pct_orders_to_target_states": 16.538461538461537,
+      "target_orders_count": 43
+    },
+    {
+      "seller_id": "88460e8ebdecbfecb5f9601833981930",
+      "revenue": 31320.4,
+      "orders_count": 246,
+      "late_orders": 59,
+      "avg_fulfillment": 18.26756948302469,
+      "seller_city": "maringa",
+      "seller_state": "PR",
+      "late_rate": 0.23983739837398374,
+      "pct_orders_to_target_states": 16.0,
+      "target_orders_count": 48
+    },
+    {
+      "seller_id": "7681ef142fd2c19048da7430856b5588",
+      "revenue": 31211.81,
+      "orders_count": 58,
+      "late_orders": 9,
+      "avg_fulfillment": 10.372716709307992,
+      "seller_city": "guarulhos",
+      "seller_state": "SP",
+      "late_rate": 0.15517241379310345,
+      "pct_orders_to_target_states": 18.421052631578945,
+      "target_orders_count": 14
+    },
+    {
+      "seller_id": "b37c4c02bda3161a7546a4e6d222d5b2",
+      "revenue": 24075.0,
+      "orders_count": 4,
+      "late_orders": 1,
+      "avg_fulfillment": 17.17511111111111,
+      "seller_city": "sao paulo",
+      "seller_state": "SP",
+      "late_rate": 0.25,
+      "pct_orders_to_target_states": 73.33333333333333,
+      "target_orders_count": 11
+    },
+    {
+      "seller_id": "7ad32824caee82087b3e2e5f33b1bf32",
+      "revenue": 22018.1,
+      "orders_count": 147,
+      "late_orders": 23,
+      "avg_fulfillment": 11.489481738683127,
+      "seller_city": "ibitinga",
+      "seller_state": "SP",
+      "late_rate": 0.1564625850340136,
+      "pct_orders_to_target_states": 13.333333333333334,
+      "target_orders_count": 24
+    },
+    {
+      "seller_id": "ff69aa92bb6b1bf9b8b7a51c2ed9cf8b",
+      "revenue": 21940.8,
+      "orders_count": 20,
+      "late_orders": 5,
+      "avg_fulfillment": 11.462290509259258,
+      "seller_city": "sao paulo",
+      "seller_state": "SP",
+      "late_rate": 0.25,
+      "pct_orders_to_target_states": 5.0,
+      "target_orders_count": 1
+    }
+  ]
+}

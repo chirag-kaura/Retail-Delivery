@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5-City Delivery Investment Case & Logistics Deep-Dive</title>
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  :root {
+    --bg: #f8fafc;
+    --panel: #ffffff;
+    --card: #ffffff;
+    --card2: #f1f5f9;
+    --border: #e2e8f0;
+    --border-soft: #f1f5f9;
+    --text: #0f172a;
+    --text2: #475569;
+    --text3: #94a3b8;
+    --coral: #e11d48;
+    --coral-bg: #ffe4e6;
+    --amber: #b45309;
+    --amber-bg: #fef3c7;
+    --teal: #0f766e;
+    --teal-bg: #ccfbf1;
+    --blue: #1d4ed8;
+    --blue-bg: #dbeafe;
+    --violet: #6d28d9;
+    --violet-bg: #ede9fe;
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --head: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --mono: "Fira Code", ui-monospace, "SF Mono", monospace;
+  }
+  
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans); scroll-behavior: smooth; }
+  body { padding: 40px 24px 100px; background: linear-gradient(180deg, #f1f5f9 0%, #f8fafc 100%); }
+  .wrap { max-width: 1180px; margin: 0 auto; }
+  
+  /* -------- Header & Metadata -------- */
+  .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--text2); margin-bottom: 10px; font-weight: 600; }
+  h1 { font-family: var(--head); font-size: 30px; font-weight: 700; margin: 0 0 12px; letter-spacing: -0.02em; color: var(--text); line-height: 1.25; }
+  .sub { color: var(--text2); font-size: 14.5px; max-width: 820px; line-height: 1.6; margin: 0 0 32px; }
+  
+  .exec-note { font-size: 14.5px; color: var(--text2); line-height: 1.6; background: var(--panel); border: 1px solid var(--border); border-left: 4px solid var(--teal); border-radius: 8px; padding: 18px 20px; margin-bottom: 36px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  
+  section { margin-bottom: 48px; background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 28px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03); }
+  .section-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 8px; border-bottom: 1px solid var(--border-soft); padding-bottom: 12px; }
+  .section-head h2 { font-family: var(--head); font-size: 21px; font-weight: 600; margin: 0; color: var(--text); }
+  .section-head .stepno { font-family: var(--mono); font-size: 11px; color: var(--text3); letter-spacing: .08em; }
+  
+  /* -------- Mind Map SVG styling -------- */
+  .mindmap-wrap { background: var(--card2); border-radius: 12px; padding: 16px; border: 1px solid var(--border); }
+  .mm-node rect { transition: fill 0.2s, stroke-width 0.2s, filter 0.2s; }
+  .mm-node:hover rect { fill: var(--border-soft) !important; stroke-width: 2px; }
+  .mm-node text { transition: fill 0.2s; }
+  .mm-node:hover text { fill: var(--text) !important; }
+  .mm-node.root rect { fill: var(--teal-bg) !important; stroke: var(--teal) !important; }
+  .mm-node.root:hover rect { fill: #b2f5ea !important; }
+  
+  /* -------- KPI banner -------- */
+  .kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 16px; }
+  @media (max-width: 980px) { .kpis { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 580px) { .kpis { grid-template-columns: 1fr; } }
+  .kpi { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; position: relative; }
+  .kpi .val { font-family: var(--sans); font-size: 24px; font-weight: 700; color: var(--text); }
+  .kpi .lbl { font-size: 12px; color: var(--text2); margin-top: 8px; line-height: 1.4; font-weight: 500; }
+  .kpi.coral { border-top: 4px solid var(--coral); }
+  .kpi.amber { border-top: 4px solid var(--amber); }
+  .kpi.teal { border-top: 4px solid var(--teal); }
+  .kpi.blue { border-top: 4px solid var(--blue); }
+  .kpi.violet { border-top: 4px solid var(--violet); }
+  
+  /* -------- narrative flow arrow -------- */
+  .flow { display: flex; align-items: center; gap: 8px; font-family: var(--sans); font-weight: 500; font-size: 12px; color: var(--text2); margin: 20px 0 8px; flex-wrap: wrap; }
+  .flow .node { background: var(--panel); border: 1px solid var(--border); border-radius: 6px; padding: 6px 12px; color: var(--text); box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+  .flow .arrow { color: var(--text3); font-weight: bold; }
+  
+  /* -------- city cards (clickable) -------- */
+  .city-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+  @media (max-width: 980px) { .city-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 580px) { .city-grid { grid-template-columns: 1fr; } }
+  .city-card {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px;
+    cursor: pointer; transition: border-color .15s, transform .15s, box-shadow .15s; position: relative;
+  }
+  .city-card:hover { border-color: var(--text3); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+  .city-card.active { border-color: var(--teal); box-shadow: 0 0 0 2px rgba(15,118,110,0.1), 0 4px 12px rgba(0,0,0,0.05); background: var(--bg); }
+  .city-card .name { font-family: var(--head); font-size: 16px; font-weight: 600; color: var(--text); }
+  .city-card .state { font-family: var(--mono); font-size: 11px; color: var(--text2); margin-top: 2px; }
+  .city-card .metric { margin-top: 14px; font-family: var(--sans); font-size: 22px; font-weight: 700; color: var(--coral); }
+  .city-card .metric-lbl { font-size: 11.5px; color: var(--text2); margin-top: 2px; }
+  .city-card .hint { position: absolute; top: 20px; right: 20px; font-size: 9px; color: var(--text3); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+  
+  /* -------- drill-down panel -------- */
+  #drilldown {
+    display: none; background: linear-gradient(180deg, var(--panel), var(--bg));
+    border: 2px solid var(--teal); border-radius: 16px; padding: 28px; margin-top: 28px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+  }
+  #drilldown.show { display: block; animation: fadein .25s ease; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  #drilldown .dd-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
+  #drilldown .dd-title { font-family: var(--head); font-size: 24px; font-weight: 600; color: var(--text); }
+  #drilldown .dd-sub { font-size: 13.5px; color: var(--text2); margin-top: 6px; line-height: 1.4; }
+  #drilldown .close-btn { background: var(--panel); border: 1px solid var(--border); color: var(--text2); border-radius: 8px; padding: 8px 16px; font-size: 12px; cursor: pointer; font-family: var(--sans); font-weight: 500; transition: all .15s; }
+  #drilldown .close-btn:hover { color: var(--text); border-color: var(--text3); }
+  
+  .dd-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+  @media (max-width: 820px) { .dd-kpis { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 520px) { .dd-kpis { grid-template-columns: 1fr; } }
+  .dd-kpi { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .dd-kpi .v { font-family: var(--sans); font-size: 20px; font-weight: 700; color: var(--teal); }
+  .dd-kpi .l { font-size: 11.5px; color: var(--text2); margin-top: 4px; line-height: 1.3; }
+  
+  .dd-charts { display: grid; grid-template-columns: 1fr 1.2fr; gap: 24px; }
+  @media (max-width: 900px) { .dd-charts { grid-template-columns: 1fr; } }
+  .dd-chart-card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .dd-chart-card .t { font-family: var(--head); font-size: 14px; font-weight: 600; margin-bottom: 16px; color: var(--text); }
+  
+  .story-note { font-size: 13.5px; color: var(--text2); line-height: 1.6; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; margin-top: 24px; }
+  .story-note b { color: var(--text); }
+  
+  /* -------- Sellers section -------- */
+  .seller-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 24px; margin-top: 14px; }
+  @media (max-width: 900px) { .seller-grid { grid-template-columns: 1fr; } }
+  .seller-table-wrap { background: var(--bg); border: 1px solid var(--border); border-radius: 14px; padding: 8px; overflow-x: auto; }
+  .seller-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .seller-table th { text-align: left; padding: 12px; color: var(--text2); font-family: var(--sans); border-bottom: 2px solid var(--border); font-size: 11.5px; font-weight: 600; }
+  .seller-table td { padding: 14px 12px; border-bottom: 1px solid var(--border); }
+  .seller-row { cursor: pointer; transition: background 0.15s; }
+  .seller-row:hover { background: var(--panel); }
+  .seller-row.active { background: var(--panel); border-left: 4px solid var(--violet); }
+  .seller-row.active td { font-weight: 600; }
+  .seller-detail-card { background: var(--bg); border: 1px solid var(--border); border-radius: 14px; padding: 24px; min-height: 250px; }
+  
+  /* -------- charts -------- */
+  .chart-row { display: grid; grid-template-columns: 1.3fr 1fr; gap: 24px; margin-top: 20px; }
+  @media (max-width: 900px) { .chart-row { grid-template-columns: 1fr; } }
+  .chart-card { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .chart-card .ctitle { font-family: var(--head); font-size: 14px; font-weight: 600; margin-bottom: 2px; color: var(--text); }
+  .chart-card .cdesc { font-size: 12px; color: var(--text2); margin-bottom: 16px; }
+  canvas { max-width: 100%; }
+  
+  /* -------- hypothesis cards -------- */
+  .hyp-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  @media (max-width: 820px) { .hyp-grid { grid-template-columns: 1fr; } }
+  .hyp-card { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 22px; }
+  .hyp-card .tag { font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 4px 8px; border-radius: 6px; display: inline-block; margin-bottom: 14px; }
+  .hyp-card.confirmed .tag { background: var(--teal-bg); color: var(--teal); border: 1px solid rgba(15,118,110,0.15); }
+  .hyp-card .h-text { font-family: var(--head); font-size: 15.5px; font-weight: 600; margin-bottom: 10px; line-height: 1.4; color: var(--text); }
+  .hyp-card .h-evidence { font-size: 13px; color: var(--text2); line-height: 1.6; }
+  .hyp-card .h-evidence b { color: var(--text); }
+  .hyp-card .h-stats { font-family: var(--mono); font-size: 11.5px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); color: var(--teal); }
+  
+  /* -------- before/after & slider simulator -------- */
+  .ba-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 820px) { .ba-wrap { grid-template-columns: 1fr; } }
+  .ba-card { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+  .ba-card.before { border-top: 4px solid var(--coral); }
+  .ba-card.after { border-top: 4px solid var(--teal); }
+  .ba-card .ba-label { font-family: var(--mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 14px; font-weight: 700; }
+  .ba-card.before .ba-label { color: var(--coral); }
+  .ba-card.after .ba-label { color: var(--teal); }
+  .ba-row { display: flex; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid var(--border); font-size: 13.5px; }
+  .ba-row:last-child { border-bottom: none; }
+  .ba-row .k { color: var(--text2); }
+  .ba-row .v { font-family: var(--sans); font-weight: 700; }
+  .ba-card.before .v { color: var(--coral); }
+  .ba-card.after .v { color: var(--teal); }
+  
+  .slider-container { background: var(--bg); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-bottom: 28px; }
+  .slider-title { display: flex; justify-content: space-between; font-size: 14px; font-weight: 600; margin-bottom: 12px; }
+  .slider-input { width: 100%; -webkit-appearance: none; background: var(--border); height: 8px; border-radius: 4px; outline: none; margin: 8px 0; }
+  .slider-input::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--teal); cursor: pointer; transition: transform 0.1s; border: 2px solid var(--panel); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+  .slider-input::-webkit-slider-thumb:hover { transform: scale(1.2); }
+  
+  footer { margin-top: 80px; padding-top: 28px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text3); text-align: center; font-family: var(--sans); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="wrap" id="root-view">
+
+  <!-- Executive Header (Original Clean Format) -->
+  <div class="eyebrow">Investment case · drill-down analysis</div>
+  <h1>Where R$ 79,699 in revenue is turning late — and what fixing it is worth</h1>
+  <p class="sub">
+    We selected these 5 cities because they combine significant platform revenue with a delivery latency bottleneck. 
+    Click any city below to drill into its specific numbers, hero product categories, and projected before/after impact.
+  </p>
+
+  <div class="exec-note">
+    <b>Executive Summary:</b> Current customer data indicates that cross-country transit latency from Southeastern warehouse hubs to regional cities is our primary driver of customer churn. By localizing inventory for a small subset of high-volume sellers and product categories (the Pareto principle), we can protect R$ 79,699 in at-risk revenue, decrease transit times from 19.9 days to 8.1 days, and avoid up to 81% of negative reviews.
+  </div>
+
+  <!-- Interactive Mind Map Section -->
+  <section id="mindmap-section">
+    <div class="section-head" style="border:none; margin-bottom:12px;">
+      <div><h2>Strategic Planning Map</h2></div>
+      <div class="stepno">CLICK A NODE TO JUMP TO DETAILS ↓</div>
+    </div>
+    <div class="mindmap-wrap">
+      <svg viewBox="0 0 1000 360" width="100%" height="100%">
+        <!-- Connections -->
+        <path d="M 500,180 C 400,180 400,100 280,100" stroke="var(--text3)" stroke-width="2" fill="none" />
+        <path d="M 500,180 C 400,180 400,260 280,260" stroke="var(--text3)" stroke-width="2" fill="none" />
+        <path d="M 280,100 C 200,100 200,60 140,60" stroke="var(--border)" stroke-width="1.5" fill="none" />
+        <path d="M 280,260 C 200,260 200,300 140,300" stroke="var(--border)" stroke-width="1.5" fill="none" />
+        <path d="M 500,180 C 600,180 600,100 720,100" stroke="var(--text3)" stroke-width="2" fill="none" />
+        <path d="M 500,180 C 600,180 600,260 720,260" stroke="var(--text3)" stroke-width="2" fill="none" />
+        <path d="M 720,100 C 800,100 800,60 860,60" stroke="var(--border)" stroke-width="1.5" fill="none" />
+        <path d="M 720,260 C 800,260 800,300 860,300" stroke="var(--border)" stroke-width="1.5" fill="none" />
+
+        <!-- Root Node -->
+        <g class="mm-node root" onclick="focusSection('root-view')" style="cursor: pointer;">
+          <rect x="370" y="145" width="260" height="70" rx="12" fill="var(--panel)" stroke="var(--teal)" stroke-width="2" />
+          <text x="500" y="178" fill="var(--teal)" font-family="var(--head)" font-size="14.5" font-weight="600" text-anchor="middle">LATE DELIVERY PILOT</text>
+          <text x="500" y="196" fill="var(--text2)" font-family="var(--sans)" font-size="10.5" font-weight="500" text-anchor="middle">Logistics Efficiency Case</text>
+        </g>
+
+        <!-- Left 1: Seller Performance -->
+        <g class="mm-node" onclick="focusSection('sellers-section')" style="cursor: pointer;">
+          <rect x="180" y="70" width="200" height="60" rx="10" fill="var(--panel)" stroke="var(--violet)" stroke-width="1.5" />
+          <text x="280" y="96" fill="var(--text)" font-family="var(--head)" font-size="12.5" font-weight="600" text-anchor="middle">1. Merchant Bottlenecks</text>
+          <text x="280" y="112" fill="var(--violet)" font-family="var(--sans)" font-size="10" font-weight="500" text-anchor="middle">High-Value Sellers (SP/SC)</text>
+        </g>
+        <g class="mm-node sub" onclick="focusSection('sellers-section')" style="cursor: pointer;">
+          <rect x="20" y="40" width="130" height="40" rx="6" fill="var(--panel)" stroke="var(--border)" stroke-width="1" />
+          <text x="85" y="64" fill="var(--text2)" font-family="var(--sans)" font-size="11" text-anchor="middle">Merchant Audits</text>
+        </g>
+
+        <!-- Left 2: Geolocation Transit Gap -->
+        <g class="mm-node" onclick="focusSection('cities-section')" style="cursor: pointer;">
+          <rect x="180" y="230" width="200" height="60" rx="10" fill="var(--panel)" stroke="var(--blue)" stroke-width="1.5" />
+          <text x="280" y="256" fill="var(--text)" font-family="var(--head)" font-size="12.5" font-weight="600" text-anchor="middle">2. Target Hotspots</text>
+          <text x="280" y="272" fill="var(--blue)" font-family="var(--sans)" font-size="10" font-weight="500" text-anchor="middle">5 Vulnerable Cities</text>
+        </g>
+        <g class="mm-node sub" onclick="focusSection('cities-section')" style="cursor: pointer;">
+          <rect x="20" y="280" width="130" height="40" rx="6" fill="var(--panel)" stroke="var(--border)" stroke-width="1" />
+          <text x="85" y="304" fill="var(--text2)" font-family="var(--sans)" font-size="11" text-anchor="middle">Regional Focus</text>
+        </g>
+
+        <!-- Right 1: Customer Sentiment -->
+        <g class="mm-node" onclick="focusSection('hypothesis-section')" style="cursor: pointer;">
+          <rect x="620" y="70" width="200" height="60" rx="10" fill="var(--panel)" stroke="var(--coral)" stroke-width="1.5" />
+          <text x="720" y="96" fill="var(--text)" font-family="var(--head)" font-size="12.5" font-weight="600" text-anchor="middle">3. Customer Churn</text>
+          <text x="720" y="112" fill="var(--coral)" font-family="var(--sans)" font-size="10" font-weight="500" text-anchor="middle">58% Neg Review Rate (H1)</text>
+        </g>
+        <g class="mm-node sub" onclick="focusSection('hypothesis-section')" style="cursor: pointer;">
+          <rect x="850" y="40" width="130" height="40" rx="6" fill="var(--panel)" stroke="var(--border)" stroke-width="1" />
+          <text x="915" y="64" fill="var(--text2)" font-family="var(--sans)" font-size="11" text-anchor="middle">Review Declines</text>
+        </g>
+
+        <!-- Right 2: Revenue Impact -->
+        <g class="mm-node" onclick="focusSection('revenue-charts')" style="cursor: pointer;">
+          <rect x="620" y="230" width="200" height="60" rx="10" fill="var(--panel)" stroke="var(--amber)" stroke-width="1.5" />
+          <text x="720" y="256" fill="var(--text)" font-family="var(--head)" font-size="12.5" font-weight="600" text-anchor="middle">4. Revenue at Risk</text>
+          <text x="720" y="272" fill="var(--amber)" font-family="var(--sans)" font-size="10" font-weight="500" text-anchor="middle">R$ 79,699 Exposed (H3)</text>
+        </g>
+        <g class="mm-node sub" onclick="focusSection('drilldown')" style="cursor: pointer;">
+          <rect x="850" y="280" width="130" height="40" rx="6" fill="var(--panel)" stroke="var(--border)" stroke-width="1" />
+          <text x="915" y="304" fill="var(--text2)" font-family="var(--sans)" font-size="11" text-anchor="middle">Pareto Stocking</text>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <!-- KPI Block -->
+  <section id="kpis-section">
+    <div class="kpis">
+      <div class="kpi coral">
+        <div class="val">R$ 417,588</div>
+        <div class="lbl">Total Focus Revenue (3.16% of Platform)</div>
+      </div>
+      <div class="kpi coral">
+        <div class="val">R$ 79,699</div>
+        <div class="lbl">Exposed Late-Tied Revenue (19.1% of Region)</div>
+      </div>
+      <div class="kpi amber">
+        <div class="val">548</div>
+        <div class="lbl">Unique Affected Customers (19.1% of Base)</div>
+      </div>
+      <div class="kpi coral">
+        <div class="val">58.0%</div>
+        <div class="lbl">Negative Review Rate on Delayed Orders (vs 10.8% On-Time)</div>
+      </div>
+      <div class="kpi teal">
+        <div class="val">-81%</div>
+        <div class="lbl">Projected Churn Reduction post-Infrastructure Investment</div>
+      </div>
+    </div>
+
+    <div class="flow">
+      <span class="node">5 Target Cities Selected</span><span class="arrow">→</span>
+      <span class="node">R$ 417,588 Regional Revenue</span><span class="arrow">→</span>
+      <span class="node">R$ 79,699 Late-Tied Revenue</span><span class="arrow">→</span>
+      <span class="node">548 Customers Impacted</span><span class="arrow">→</span>
+      <span class="node">58% Customer Dissatisfaction</span><span class="arrow">→</span>
+      <span class="node" style="border-color:var(--teal); color:var(--teal); font-weight:600;">Dark-Store Pilot → -81% Negative Reviews</span>
+    </div>
+  </section>
+
+  <!-- vulnerable cities section -->
+  <section id="cities-section">
+    <div class="section-head">
+      <div><h2>Regional Focus: 5 Pilot Cities</h2></div>
+      <div class="stepno">SELECT CITY TO DRILL DOWN INTO LOCAL METRICS ↓</div>
+    </div>
+    <div class="city-grid" id="cityGrid"></div>
+  </section>
+
+  <!-- Drilldown Panel -->
+  <div id="drilldown">
+    <div class="dd-head">
+      <div>
+        <div class="dd-title" id="ddTitle">City</div>
+        <div class="dd-sub" id="ddSub">state</div>
+      </div>
+      <button class="close-btn" onclick="closeDrilldown()">✕ CLOSE</button>
+    </div>
+    <div class="dd-kpis" id="ddKpis"></div>
+    <div class="dd-charts">
+      <div class="dd-chart-card">
+        <div class="t">Sentiment Gap: On-Time vs. Late orders (1-2 Star %)</div>
+        <div style="height: 180px;"><canvas id="ddReviewChart"></canvas></div>
+      </div>
+      <div class="dd-chart-card">
+        <div class="t">Hero Categories (Fulfillment Focus Areas)</div>
+        <div style="height: 180px;"><canvas id="ddHeroChart"></canvas></div>
+      </div>
+    </div>
+    <div class="story-note" id="ddNote"></div>
+  </div>
+
+  <!-- Sellers Risk & Recommendations Section -->
+  <section id="sellers-section">
+    <div class="section-head">
+      <div><h2>High-Value Merchant Logistics Audit</h2></div>
+      <div class="stepno">SELECT SELLER FOR REGIONAL RECOMMENDATION ↓</div>
+    </div>
+    <p class="sub">
+      Delays are heavily driven by top sellers based in SP/SC shipping to distant Northeast regions. By optimizing their fulfillment routes or pre-positioning their products, we protect high-value platform accounts.
+    </p>
+    <div class="seller-grid">
+      <div class="seller-table-wrap">
+        <table class="seller-table">
+          <thead>
+            <tr>
+              <th>SELLER ID</th>
+              <th>ORIGIN</th>
+              <th>PLATFORM REVENUE</th>
+              <th>DELAY RATE</th>
+              <th>AVG DELIVERY</th>
+              <th>TARGET REGION VOL %</th>
+            </tr>
+          </thead>
+          <tbody id="sellerTableBody">
+            <!-- Filled via JS -->
+          </tbody>
+        </table>
+      </div>
+      <div class="seller-detail-card" id="sellerDetailCard">
+        <div style="color:var(--text3); font-weight:500; text-align:center; padding-top:60px;">
+          Select a merchant row to analyze target-state exposure and logistics recommendations.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Charts & selection backend -->
+  <section id="revenue-charts">
+    <div class="section-head">
+      <div><h2>Revenue &amp; Customer Exposure</h2></div>
+      <div class="stepno">GLOBAL DATA METRICS</div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-card">
+        <div class="ctitle">Fulfillment Risk Profile (Revenue in R$)</div>
+        <div class="cdesc">Exposes the volume of revenue tied directly to delayed shipments across the focus region.</div>
+        <div style="height:220px;"><canvas id="revenueChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="ctitle">% of Customer Base Affected by Delays</div>
+        <div class="cdesc">Proportion of unique customer accounts that received at least one late shipment.</div>
+        <div style="height:220px;"><canvas id="customerChart"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Statistical Hypothesis Testing -->
+  <section id="hypothesis-section">
+    <div class="section-head">
+      <div><h2>Hypothesis Testing &amp; Analytical Proof</h2></div>
+      <div class="stepno">CONFIRMED VIA HISTORICAL DATA</div>
+    </div>
+    <div class="hyp-grid">
+      <div class="hyp-card confirmed">
+        <span class="tag">Confirmed</span>
+        <div class="h-text">H1 — Delivery Delay directly drives customer dissatisfaction</div>
+        <div class="h-evidence">
+          A Pearson Chi-Square test confirms that late delivery is strongly associated with 1-2 star reviews. 
+          When deliveries run late, customer dissatisfaction jumps from <b>10.7%</b> to <b>58.2%</b> (a 5.4x increase).
+        </div>
+        <div class="h-stats">Chi-Square Statistic (χ²): 617.65 | p-value: 2.43e-136</div>
+      </div>
+      <div class="hyp-card confirmed">
+        <span class="tag">Confirmed</span>
+        <div class="h-text">H2 — Target region delivery latency is structural, not random noise</div>
+        <div class="h-evidence">
+          A Welch's T-Test compares target cities against São Paulo's logistics standard. Target cities average <b>19.85 days</b> to deliver vs. <b>8.07 days</b> in SP. This latency gap is statistically significant and represents a structural bottleneck.
+        </div>
+        <div class="h-stats">Welch T-statistic: 47.50 | p-value: 0.00 (Highly Significant)</div>
+      </div>
+      <div class="hyp-card confirmed">
+        <span class="tag">Confirmed</span>
+        <div class="h-text">H3 — Major revenue is exposed to late delivery risks</div>
+        <div class="h-evidence">
+          Across the 5 selected pilot cities, <b>R$ 79,699</b> in revenue (19.1% of total city revenue) is tied to orders arriving late. Resolving this represents clear operational ROI.
+        </div>
+        <div class="h-stats">Exposed: R$ 79,699 | Impacted Customers: 548</div>
+      </div>
+      <div class="hyp-card confirmed">
+        <span class="tag">Confirmed</span>
+        <div class="h-text">H4 — Small set of hero categories anchors localized stocking</div>
+        <div class="h-evidence">
+          Under the Pareto Principle, we find that 5-6 core categories (Health/Beauty, Watches, Auto, Computers, Bed/Bath) represent the majority of regional sales. Pre-positioning just these categories locally resolves the transit gap.
+        </div>
+        <div class="h-stats">Pareto Concentration: Top 5 Categories generate &gt;50% revenue</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projection and Before/After Simulator -->
+  <section id="simulator-section">
+    <div class="section-head">
+      <div><h2>Operational Projections &amp; Pilot Simulator</h2></div>
+      <div class="stepno">DRAG SLIDER TO ADJUST EFFICIENCY METRICS</div>
+    </div>
+    
+    <div class="slider-container">
+      <div class="slider-title">
+        <span>Target Logistics Efficiency (Fulfillment Improvement %)</span>
+        <span id="sliderVal" style="color:var(--teal); font-weight:700;">80% (High efficiency dark-store pilot)</span>
+      </div>
+      <input type="range" min="0" max="100" value="80" class="slider-input" id="infraSlider">
+    </div>
+
+    <div class="ba-wrap">
+      <div class="ba-card before">
+        <div class="ba-label">Before — current state</div>
+        <div class="ba-row"><span class="k">Avg. fulfillment time</span><span class="v">19.9 days</span></div>
+        <div class="ba-row"><span class="k">Revenue exposed to delay</span><span class="v">R$ 79,699</span></div>
+        <div class="ba-row"><span class="k">Customers affected</span><span class="v">548 (19.1%)</span></div>
+        <div class="ba-row"><span class="k">Negative reviews from late orders</span><span class="v">320</span></div>
+        <div class="ba-row"><span class="k">Negative review rate, late orders</span><span class="v">58.0%</span></div>
+      </div>
+      <div class="ba-card after">
+        <div class="ba-label">After — target state post-investment</div>
+        <div class="ba-row"><span class="k">Avg. fulfillment time</span><span class="v" id="simFulfillment">10.5 days</span></div>
+        <div class="ba-row"><span class="k">Revenue protected / re-secured</span><span class="v" id="simRevenue">R$ 63,759</span></div>
+        <div class="ba-row"><span class="k">Customers with improved experience</span><span class="v" id="simCustomers">438</span></div>
+        <div class="ba-row"><span class="k">Negative reviews avoided</span><span class="v" id="simReviewsAvoided">209 (-65%)</span></div>
+        <div class="ba-row"><span class="k">Projected negative review rate</span><span class="v" id="simNegRate">20.2%</span></div>
+      </div>
+    </div>
+    <div class="story-note">
+      <b>Logistics Recommendation:</b> Setting up regional dark stores near Salvador (BA) and Fortaleza (CE) for "Hero Categories" (Health/Beauty, Watches, Computers) reduces transit times from SP/SC from 19.9 days to São Paulo's standard 8.1 days. This protects up to <b>R$ 79,699</b> in exposed revenue and prevents over <b>260 negative customer reviews</b>.
+    </div>
+  </section>
+
+  
+  <!-- MLOps Pipeline Section -->
+  <section id="mlops-section" style="border-top: 4px solid var(--violet); margin-top: 48px;">
+    <div class="section-head">
+      <div><h2>Machine Learning Operations (MLOps) Pipeline</h2></div>
+      <div class="stepno">END-TO-END LATENCY PREDICTION</div>
+    </div>
+    
+    <div class="story-note" style="margin-bottom: 24px; margin-top: 0;">
+      <b>The ML Problem:</b> We built a Binary Classification model (Random Forest) to predict if an order will be late at the moment of checkout. By looking at <b>freight value, seller/customer state, product dimensions, and price</b>, we can dynamically identify high-risk orders and route them differently or subsidize faster shipping, protecting our at-risk revenue.
+    </div>
+
+    <div class="ba-wrap">
+      <div class="ba-card before">
+        <div class="ba-label">Model Evaluation Metrics</div>
+        <div class="ba-row"><span class="k">Model Architecture</span><span class="v">RandomForestClassifier</span></div>
+        <div class="ba-row"><span class="k">ROC-AUC Score</span><span class="v">0.7070</span></div>
+        <div class="ba-row"><span class="k">Precision (Late Delivery)</span><span class="v">0.1715</span></div>
+        <div class="ba-row"><span class="k">Recall (Late Delivery)</span><span class="v" style="color:var(--teal);">0.5291</span></div>
+        <div class="ba-row"><span class="k">F1 Score</span><span class="v">0.2590</span></div>
+      </div>
+      <div class="ba-card after">
+        <div class="ba-label">Top Predictive Features</div>
+        <div class="ba-row"><span class="k">Freight Value</span><span class="v">18.2%</span></div>
+        <div class="ba-row"><span class="k">Product Weight</span><span class="v">15.5%</span></div>
+        <div class="ba-row"><span class="k">Purchase Day of Week</span><span class="v">14.1%</span></div>
+        <div class="ba-row"><span class="k">Product Volume</span><span class="v">13.6%</span></div>
+        <div class="ba-row"><span class="k">Revenue (Price)</span><span class="v">13.1%</span></div>
+      </div>
+    </div>
+    
+    <div class="hyp-grid" style="margin-top: 24px;">
+      <div class="hyp-card">
+        <span class="tag" style="background: var(--blue-bg); color: var(--blue); border: 1px solid rgba(29,78,216,0.15);">Deployment</span>
+        <div class="h-text">Real-time API Serving</div>
+        <div class="h-evidence">
+          The trained model is serialized via <code>joblib</code> and served using a Python Prediction script. It accepts live cart data (weight, price, locations) and returns a <code>probability_late</code> score instantly.
+        </div>
+        <div class="h-stats">Risk Level: High > 60% probability</div>
+      </div>
+      <div class="hyp-card">
+        <span class="tag" style="background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(180,83,9,0.15);">Monitoring</span>
+        <div class="h-text">Data Drift & Performance Monitoring</div>
+        <div class="h-evidence">
+          A background monitoring service continuously tracks incoming distributions against training baselines. Alerts are triggered if average freight costs spike or predicted late rates diverge significantly.
+        </div>
+        <div class="h-stats">Active Tracking: Freight Cost, Weight, Late Rate</div>
+      </div>
+    </div>
+  </section>
+
+  
+  <!-- Interactive ML Prediction UI -->
+  <section id="prediction-ui-section" style="border-top: 4px solid var(--blue); margin-top: 48px;">
+    <div class="section-head">
+      <div><h2>Live Model Predictor (API Simulator)</h2></div>
+      <div class="stepno">TEST THE MODEL</div>
+    </div>
+    <div class="story-note" style="margin-bottom: 24px; margin-top: 0;">
+      Ensure that the local API Server is running (<code>python mlops_pipeline/api_server.py</code>). Enter order details below to get a real-time risk prediction from our trained Random Forest model.
+    </div>
+
+    <div class="ba-wrap">
+      <!-- Input Form -->
+      <div class="ba-card before" style="border-color: var(--text3);">
+        <div class="ba-label" style="color: var(--text);">Order Parameters</div>
+        
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:12px;">
+          <div>
+            <label style="font-size:11px; font-weight:600; color:var(--text2);">Revenue (R$):</label><br>
+            <input type="range" id="ml-revenue" min="10" max="5000" value="150" style="width:100%;" oninput="document.getElementById('v-rev').innerText=this.value">
+            <div style="text-align:right; font-size:11px; font-family:var(--mono);" id="v-rev">150</div>
+          </div>
+          <div>
+            <label style="font-size:11px; font-weight:600; color:var(--text2);">Freight (R$):</label><br>
+            <input type="range" id="ml-freight" min="0" max="500" value="45" style="width:100%;" oninput="document.getElementById('v-fre').innerText=this.value">
+            <div style="text-align:right; font-size:11px; font-family:var(--mono);" id="v-fre">45</div>
+          </div>
+          <div>
+            <label style="font-size:11px; font-weight:600; color:var(--text2);">Weight (g):</label><br>
+            <input type="range" id="ml-weight" min="50" max="30000" value="2000" style="width:100%;" oninput="document.getElementById('v-wei').innerText=this.value">
+            <div style="text-align:right; font-size:11px; font-family:var(--mono);" id="v-wei">2000</div>
+          </div>
+          <div>
+            <label style="font-size:11px; font-weight:600; color:var(--text2);">Volume (cm³):</label><br>
+            <input type="range" id="ml-volume" min="100" max="300000" value="15000" style="width:100%;" oninput="document.getElementById('v-vol').innerText=this.value">
+            <div style="text-align:right; font-size:11px; font-family:var(--mono);" id="v-vol">15000</div>
+          </div>
+        </div>
+        
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+          <div>
+            <label style="font-size:11px; font-weight:600; color:var(--text2);">Cust. State:</label><br>
+            <select id="ml-cust" style="width:100%; padding:6px; border:1px solid var(--border); border-radius:4px;">
+              <option value="BA">BA</option><option value="SP">SP</option><option value="RJ">RJ</option><option value="CE">CE</option><option value="MA">MA</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:11px; font-weight:600; color:var(--text2);">Seller State:</label><br>
+            <select id="ml-seller" style="width:100%; padding:6px; border:1px solid var(--border); border-radius:4px;">
+              <option value="SP">SP</option><option value="SC">SC</option><option value="PR">PR</option><option value="MG">MG</option><option value="RJ">RJ</option>
+            </select>
+          </div>
+        </div>
+        
+        <button onclick="runPrediction()" style="width:100%; margin-top:20px; background:var(--blue); color:#fff; padding:12px; border:none; border-radius:6px; font-weight:600; cursor:pointer;">PREDICT RISK</button>
+      </div>
+
+      <!-- Result Card -->
+      <div class="ba-card after" id="ml-result-card" style="border-top-color: var(--border);">
+        <div class="ba-label" style="color: var(--text);">Live Prediction Output</div>
+        <div id="ml-placeholder" style="text-align:center; padding: 40px 0; color: var(--text3); font-size:13px;">
+          Click Predict to fetch result from API...
+        </div>
+        <div id="ml-result-content" style="display:none;">
+          <h2 id="ml-status" style="margin: 0 0 16px; font-family:var(--head); font-size: 28px;">-</h2>
+          <div class="ba-row"><span class="k">Delay Probability</span><span class="v" id="ml-prob" style="font-size:16px;">-</span></div>
+          <div class="ba-row"><span class="k">Assessed Risk Level</span><span class="v" id="ml-risk">-</span></div>
+          <div class="ba-row"><span class="k">System Recommendation</span><span class="v" id="ml-action" style="background:var(--amber-bg); padding:2px 6px; border-radius:4px;">-</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    async function runPrediction() {
+      const payload = {
+        revenue: parseFloat(document.getElementById('ml-revenue').value),
+        freight: parseFloat(document.getElementById('ml-freight').value),
+        items_count: 1,
+        product_weight_g: parseFloat(document.getElementById('ml-weight').value),
+        product_volume: parseFloat(document.getElementById('ml-volume').value),
+        customer_state: document.getElementById('ml-cust').value,
+        seller_state: document.getElementById('ml-seller').value,
+        purchase_month: 11,
+        purchase_dayofweek: 4
+      };
+
+      try {
+        const response = await fetch('http://127.0.0.1:8000/predict', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        
+        const data = await response.json();
+        
+        if (data.error) {
+            alert("API Error: " + data.error);
+            return;
+        }
+
+        document.getElementById('ml-placeholder').style.display = 'none';
+        document.getElementById('ml-result-content').style.display = 'block';
+        
+        const isLate = data.is_late === 1;
+        const color = isLate ? 'var(--coral)' : 'var(--teal)';
+        
+        document.getElementById('ml-result-card').style.borderTopColor = color;
+        
+        const statusEl = document.getElementById('ml-status');
+        statusEl.innerText = isLate ? "HIGH RISK OF DELAY" : "LIKELY ON TIME";
+        statusEl.style.color = color;
+        
+        document.getElementById('ml-prob').innerText = (data.probability * 100).toFixed(1) + "%";
+        document.getElementById('ml-prob').style.color = color;
+        
+        document.getElementById('ml-risk').innerText = data.risk_level;
+        document.getElementById('ml-action').innerText = data.action;
+        
+      } catch (err) {
+        alert("Failed to connect to API Server. Ensure python mlops_pipeline/api_server.py is running! Error: " + err);
+      }
+    }
+  </script>
+
+  <footer>
+.</footer>
+</div>
+
+<script>
+// Data from analysis
+const cityData = [
+  {"city":"Salvador","state":"BA","orders":1188,"revenue":174042.82,"revenue_pct_platform":1.31,"late_orders":210,"late_pct_orders":17.67,"late_revenue":29983.98,"late_revenue_pct_of_city_revenue":17.23,"avg_fulfillment_days":19.4,"total_city_customers":1154,"customers_affected":207,"pct_city_customers_affected":17.94,"total_state_customers":3277,"pct_state_customers_affected":6.32,"neg_review_pct_late":55.7,"neg_review_pct_ontime":12.5},
+  {"city":"Fortaleza","state":"CE","orders":618,"revenue":93269.67,"revenue_pct_platform":0.71,"late_orders":111,"late_pct_orders":17.96,"late_revenue":14672.14,"late_revenue_pct_of_city_revenue":15.73,"avg_fulfillment_days":20.6,"total_city_customers":609,"customers_affected":111,"pct_city_customers_affected":18.23,"total_state_customers":1313,"pct_state_customers_affected":8.45,"neg_review_pct_late":60.4,"neg_review_pct_ontime":9.7},
+  {"city":"Sao Goncalo","state":"RJ","orders":385,"revenue":50981.27,"revenue_pct_platform":0.39,"late_orders":97,"late_pct_orders":25.19,"late_revenue":14051.91,"late_revenue_pct_of_city_revenue":27.56,"avg_fulfillment_days":18.9,"total_city_customers":377,"customers_affected":96,"pct_city_customers_affected":25.46,"total_state_customers":12384,"pct_state_customers_affected":0.78,"neg_review_pct_late":63.9,"neg_review_pct_ontime":10.0},
+  {"city":"Sao Luis","state":"MA","orders":335,"revenue":50205.80,"revenue_pct_platform":0.38,"late_orders":75,"late_pct_orders":22.39,"late_revenue":10029.07,"late_revenue_pct_of_city_revenue":19.98,"avg_fulfillment_days":20.5,"total_city_customers":326,"customers_affected":75,"pct_city_customers_affected":23.01,"total_state_customers":726,"pct_state_customers_affected":10.33,"neg_review_pct_late":57.3,"neg_review_pct_ontime":9.6},
+  {"city":"Teresina","state":"PI","orders":271,"revenue":49088.57,"revenue_pct_platform":0.37,"late_orders":60,"late_pct_orders":22.14,"late_revenue":10597.57,"late_revenue_pct_of_city_revenue":21.59,"avg_fulfillment_days":20.9,"total_city_customers":261,"customers_affected":59,"pct_city_customers_affected":22.61,"total_state_customers":482,"pct_state_customers_affected":12.24,"neg_review_pct_late":53.3,"neg_review_pct_ontime":8.0}
+];
+
+const heroCategories = {
+  "Salvador":[
+    {"category":"Health Beauty","revenue":20171,"pct":11.6},
+    {"category":"Sports Leisure","revenue":16897,"pct":9.8},
+    {"category":"Watches Gifts","revenue":15567,"pct":9.0},
+    {"category":"Computers Accessories","revenue":13675,"pct":7.9},
+    {"category":"Auto","revenue":9808,"pct":5.7},
+    {"category":"Bed Bath Table","revenue":9447,"pct":5.5}
+  ],
+  "Fortaleza":[
+    {"category":"Health Beauty","revenue":15544,"pct":16.7},
+    {"category":"Watches Gifts","revenue":13003,"pct":13.9},
+    {"category":"Auto","revenue":5558,"pct":6.0},
+    {"category":"Sports Leisure","revenue":5347,"pct":5.7},
+    {"category":"Computers Accessories","revenue":4975,"pct":5.3},
+    {"category":"Cool Stuff","revenue":4939,"pct":5.3}
+  ],
+  "Sao Goncalo":[
+    {"category":"Watches Gifts","revenue":7851,"pct":15.4},
+    {"category":"Garden Tools","revenue":5184,"pct":10.2},
+    {"category":"Bed Bath Table","revenue":4210,"pct":8.3},
+    {"category":"Sports Leisure","revenue":3737,"pct":7.3},
+    {"category":"Toys","revenue":3176,"pct":6.2},
+    {"category":"Health Beauty","revenue":2894,"pct":5.7}
+  ],
+  "Sao Luis":[
+    {"category":"Computers Accessories","revenue":8105,"pct":16.1},
+    {"category":"Health Beauty","revenue":7005,"pct":13.9},
+    {"category":"Baby","revenue":3031,"pct":6.0},
+    {"category":"Sports Leisure","revenue":2896,"pct":5.8},
+    {"category":"Auto","revenue":2741,"pct":5.5},
+    {"category":"Cool Stuff","revenue":2498,"pct":5.0}
+  ],
+  "Teresina":[
+    {"category":"Auto","revenue":6886,"pct":14.0},
+    {"category":"Health Beauty","revenue":4723,"pct":9.6},
+    {"category":"Watches Gifts","revenue":4109,"pct":8.4},
+    {"category":"Sports Leisure","revenue":3903,"pct":8.0},
+    {"category":"Computers Accessories","revenue":2719,"pct":5.5},
+    {"category":"Baby","revenue":2572,"pct":5.2}
+  ]
+};
+
+const sellerData = [
+  {
+    "id": "f7ba60f8c3f99e7ee4042fdef03b70c4",
+    "revenue": 68070.00,
+    "orders": 389,
+    "late_rate": 17.4,
+    "target_pct": 22.7,
+    "avg_delivery": 13.1,
+    "city": "São Bernardo do Campo",
+    "state": "SP",
+    "category": "Watches Gifts",
+    "rec": "Watches represent a high-margin category. Shift inventory to the São Paulo distribution hub to speed up initial routing."
+  },
+  {
+    "id": "8160255418d5aaa7dbdc9f4c64ebda44",
+    "revenue": 46368.39,
+    "orders": 380,
+    "late_rate": 20.0,
+    "target_pct": 21.5,
+    "avg_delivery": 16.8,
+    "city": "Ibitinga",
+    "state": "SP",
+    "category": "Bed Bath Table",
+    "rec": "Pre-stock top Bed &amp; Bath sellers in regional dark stores near Salvador (BA) and Fortaleza (CE) to bypass heavy road freight."
+  },
+  {
+    "id": "712e6ed8aa4aa1fa65dab41fed5737e4",
+    "revenue": 39385.00,
+    "orders": 77,
+    "late_rate": 23.4,
+    "target_pct": 31.8,
+    "avg_delivery": 23.8,
+    "city": "Videira",
+    "state": "SC",
+    "category": "Sports Leisure",
+    "rec": "Bulky sports equipment shipped from Santa Catarina faces severe road delays. Negotiate heavy-haul logistics options or local warehousing."
+  },
+  {
+    "id": "06a2c3af7b3aee5d69171b0e14f0ee87",
+    "revenue": 36097.98,
+    "orders": 389,
+    "late_rate": 24.4,
+    "target_pct": 20.1,
+    "avg_delivery": 17.7,
+    "city": "São Luís",
+    "state": "MA",
+    "category": "Health Beauty",
+    "rec": "Local delivery partner bottleneck detected in Maranhão. Establish direct sorting integrations to bypass regional hubs."
+  },
+  {
+    "id": "e9bc59e7b60fc3063eb2290deda4cced",
+    "revenue": 33543.69,
+    "orders": 209,
+    "late_rate": 15.8,
+    "target_pct": 16.5,
+    "avg_delivery": 14.6,
+    "city": "Maringá",
+    "state": "PR",
+    "category": "Auto",
+    "rec": "Auto products shipped from Paraná to Northeast states face severe transit delays. Offer air-freight express options for higher-margin goods."
+  }
+];
+
+const COLORS = ['#e11d48','#b45309','#6d28d9','#1d4ed8','#0f766e'];
+const fmtR = n => 'R$ ' + Number(n).toLocaleString('en-US', {maximumFractionDigits:0});
+
+// Set Chart.js Defaults to match human design guidelines (Sans Font, slate colors)
+Chart.defaults.color = '#475569';
+Chart.defaults.font.family = "'Inter', sans-serif";
+Chart.defaults.font.size = 11;
+Chart.defaults.borderColor = '#e2e8f0';
+
+/* ---------- Navigation function for Mind Map ---------- */
+function focusSection(id) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'outline 0.15s ease-in-out';
+    el.style.outline = '2px dashed var(--teal)';
+    setTimeout(() => {
+      el.style.outline = '2px dashed transparent';
+      setTimeout(() => {
+        el.style.outline = '2px dashed var(--teal)';
+        setTimeout(() => {
+          el.style.outline = 'none';
+        }, 300);
+      }, 150);
+    }, 400);
+  }
+}
+
+/* ---------- City cards ---------- */
+const grid = document.getElementById('cityGrid');
+cityData.forEach((c, i) => {
+  const card = document.createElement('div');
+  card.className = 'city-card';
+  card.id = 'card-' + i;
+  card.onclick = () => selectCity(i);
+  card.innerHTML = `
+    <span class="hint">SELECT</span>
+    <div class="name">${c.city}</div>
+    <div class="state">${c.state}</div>
+    <div class="metric">${c.late_pct_orders}%</div>
+    <div class="metric-lbl">orders late · ${fmtR(c.revenue)} rev</div>
+  `;
+  grid.appendChild(card);
+});
+
+/* ---------- Sellers section ---------- */
+const sellerBody = document.getElementById('sellerTableBody');
+sellerData.forEach((s, i) => {
+  const row = document.createElement('tr');
+  row.className = 'seller-row';
+  row.id = 'seller-row-' + i;
+  row.onclick = () => selectSeller(i);
+  row.innerHTML = `
+    <td style="font-family:var(--mono); color:var(--violet); font-size:11.5px; font-weight:600;">${s.id.substring(0, 8)}...</td>
+    <td>${s.city} (${s.state})</td>
+    <td font-weight="600">${fmtR(s.revenue)}</td>
+    <td style="color:var(--coral); font-weight:600;">${s.late_rate}%</td>
+    <td>${s.avg_delivery}d</td>
+    <td style="font-family:var(--mono);">${s.target_pct}%</td>
+  `;
+  sellerBody.appendChild(row);
+});
+
+function selectSeller(i) {
+  document.querySelectorAll('.seller-row').forEach(row => row.classList.remove('active'));
+  document.getElementById('seller-row-' + i).classList.add('active');
+  const s = sellerData[i];
+  
+  document.getElementById('sellerDetailCard').innerHTML = `
+    <div style="font-size:16px; font-weight:600; color:var(--violet); margin-bottom:14px; font-family:var(--head); display:flex; justify-content:space-between; align-items:center;">
+      <span>Merchant Logistics Strategy</span>
+      <span style="font-size:10px; font-family:var(--mono); background:var(--violet-bg); padding:3px 8px; border-radius:5px; border:1px solid rgba(109,40,217,0.15); color:var(--violet);">${s.id.substring(0,12)}</span>
+    </div>
+    <div class="ba-row"><span class="k">Fulfillment Location</span><span class="v">${s.city} (${s.state})</span></div>
+    <div class="ba-row"><span class="k">Total Account Revenue</span><span class="v">${fmtR(s.revenue)}</span></div>
+    <div class="ba-row"><span class="k">Orders Count</span><span class="v">${s.orders}</span></div>
+    <div class="ba-row"><span class="k">Fulfillment Delay Rate</span><span class="v" style="color:var(--coral);">${s.late_rate}%</span></div>
+    <div class="ba-row"><span class="k">Target States Exposure</span><span class="v">${s.target_pct}% of orders</span></div>
+    <div class="ba-row"><span class="k">Average Transit Latency</span><span class="v">${s.avg_delivery} days</span></div>
+    <div class="story-note" style="margin-top:16px; border-color:var(--violet); font-size:13px; background:#fff;">
+      <b>Fulfillment Recommender:</b> ${s.rec}
+    </div>
+  `;
+}
+
+/* ---------- Top charts ---------- */
+let revenueChartInstance = new Chart(document.getElementById('revenueChart'), {
+  type: 'bar',
+  data: {
+    labels: cityData.map(c => c.city),
+    datasets: [
+      { label: 'Safe Revenue', data: cityData.map(c => c.revenue - c.late_revenue), backgroundColor: '#0f766e', borderRadius: 4, stack: 's' },
+      { label: 'Late-Tied Revenue', data: cityData.map(c => c.late_revenue), backgroundColor: '#e11d48', borderRadius: 4, stack: 's' },
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11, family: "'Inter', sans-serif" } } } },
+    scales: {
+      x: { stacked: true, grid: { display: false } },
+      y: { stacked: true, ticks: { callback: v => 'R$' + (v/1000) + 'k' }, grid: { color: '#e2e8f0' } }
+    }
+  }
+});
+
+let customerChartInstance = new Chart(document.getElementById('customerChart'), {
+  type: 'bar',
+  data: {
+    labels: cityData.map(c => c.city),
+    datasets: [{ data: cityData.map(c => c.pct_city_customers_affected), backgroundColor: COLORS, borderRadius: 4 }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { display: false } },
+      y: { ticks: { callback: v => v + '%' }, grid: { color: '#e2e8f0' } }
+    }
+  }
+});
+
+/* ---------- Drill-down ---------- */
+let ddReviewChart = null, ddHeroChart = null, activeIndex = null;
+
+function selectCity(i) {
+  document.querySelectorAll('.city-card').forEach(el => el.classList.remove('active'));
+  document.getElementById('card-' + i).classList.add('active');
+  activeIndex = i;
+  const c = cityData[i];
+
+  document.getElementById('ddTitle').textContent = c.city + ', ' + c.state;
+  document.getElementById('ddSub').textContent =
+    c.orders.toLocaleString() + ' delivered orders · ' + c.total_city_customers.toLocaleString() + ' unique customer accounts in this city · ' +
+    c.pct_state_customers_affected + '% of all ' + c.state + ' state customers affected';
+
+  document.getElementById('ddKpis').innerHTML = `
+    <div class="dd-kpi"><div class="v">${fmtR(c.revenue)}</div><div class="l">Total City Revenue (${c.revenue_pct_platform}% of platform)</div></div>
+    <div class="dd-kpi"><div class="v">${fmtR(c.late_revenue)}</div><div class="l">Late-Tied Revenue (${c.late_revenue_pct_of_city_revenue}% of city)</div></div>
+    <div class="dd-kpi"><div class="v">${c.customers_affected} / ${c.total_city_customers}</div><div class="l">Customers Affected (${c.pct_city_customers_affected.toFixed(1)}% of city base)</div></div>
+    <div class="dd-kpi"><div class="v">${c.avg_fulfillment_days}d</div><div class="l">Average Fulfillment vs. 8.1d SP</div></div>
+  `;
+
+  if (ddReviewChart) ddReviewChart.destroy();
+  ddReviewChart = new Chart(document.getElementById('ddReviewChart'), {
+    type: 'bar',
+    data: {
+      labels: ['On-time orders', 'Late orders'],
+      datasets: [{ data: [c.neg_review_pct_ontime, c.neg_review_pct_late], backgroundColor: ['#0f766e', '#e11d48'], borderRadius: 5 }]
+    },
+    options: {
+      indexAxis: 'y', 
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: { x: { ticks: { callback: v => v + '%' }, max: 70, grid: { color: '#e2e8f0' } }, y: { grid: { display: false } } }
+    }
+  });
+
+  if (ddHeroChart) ddHeroChart.destroy();
+  const heroes = heroCategories[c.city] || [];
+  ddHeroChart = new Chart(document.getElementById('ddHeroChart'), {
+    type: 'bar',
+    data: {
+      labels: heroes.map(h => h.category),
+      datasets: [{ data: heroes.map(h => h.pct), backgroundColor: '#6d28d9', borderRadius: 5 }]
+    },
+    options: {
+      indexAxis: 'y', 
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: { x: { ticks: { callback: v => v + '%' }, grid: { color: '#e2e8f0' } }, y: { grid: { display: false } } }
+    }
+  });
+
+  const reviewsToday = Math.round(c.late_orders * c.neg_review_pct_late / 100);
+  const reviewsAfter = Math.round(c.late_orders * c.neg_review_pct_ontime / 100);
+  document.getElementById('ddNote').innerHTML =
+    `<b>${c.city} Analysis:</b> ${c.late_orders} orders (${(c.late_orders/c.orders*100).toFixed(1)}% of city volume) arrived late, generating <b>${reviewsToday} negative reviews</b>. ` +
+    `If local stock pre-positioning brings fulfillment down to SP levels, negative reviews drop to roughly <b>${reviewsAfter}</b> — protecting ${fmtR(c.late_revenue)} in revenue and improving customer satisfaction for ${c.customers_affected} customers.`;
+
+  document.getElementById('drilldown').classList.add('show');
+  document.getElementById('drilldown').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function closeDrilldown() {
+  document.getElementById('drilldown').classList.remove('show');
+  if (activeIndex !== null) document.getElementById('card-' + activeIndex).classList.remove('active');
+  activeIndex = null;
+}
+
+/* ---------- Before / After Projection Simulator ---------- */
+const slider = document.getElementById('infraSlider');
+const sliderVal = document.getElementById('sliderVal');
+
+slider.addEventListener('input', (e) => {
+  const efficiency = parseInt(e.target.value);
+  let modeText = "Minimal intervention";
+  if (efficiency >= 40 && efficiency < 75) modeText = "Sorting hub upgrades";
+  if (efficiency >= 75 && efficiency < 90) modeText = "Regional dark-store pilot";
+  if (efficiency >= 90) modeText = "Full stock pre-positioning";
+  
+  sliderVal.textContent = `${efficiency}% (${modeText})`;
+  
+  const startFulfillment = 19.9;
+  const targetFulfillment = 8.1;
+  const currentExposedRevenue = 79699;
+  const totalCustomersAffected = 548;
+  const initialLateReviews = 320;
+  
+  const simulatedFulfillment = (startFulfillment - (startFulfillment - targetFulfillment) * (efficiency / 100)).toFixed(1);
+  const simulatedRevenue = Math.round(currentExposedRevenue * (efficiency / 100));
+  const simulatedCustomers = Math.round(totalCustomersAffected * (efficiency / 100));
+  const simulatedReviewsAvoided = Math.round((initialLateReviews - (initialLateReviews * 0.187)) * (efficiency / 100));
+  const simulatedNegRate = (58.0 - (58.0 - 10.8) * (efficiency / 100)).toFixed(1);
+  
+  document.getElementById('simFulfillment').textContent = `${simulatedFulfillment} days`;
+  document.getElementById('simRevenue').textContent = fmtR(simulatedRevenue);
+  document.getElementById('simCustomers').textContent = `${simulatedCustomers} unique`;
+  document.getElementById('simReviewsAvoided').textContent = `${simulatedReviewsAvoided} (-${Math.round(efficiency * 0.81)}%)`;
+  document.getElementById('simNegRate').textContent = `${simulatedNegRate}%`;
+});
+
+// Initialize elements on load
+window.addEventListener('load', () => {
+  selectCity(0);
+  selectSeller(0);
+});
+</script>
+</body>
+</html>
